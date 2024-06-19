@@ -1,0 +1,47 @@
+{
+  "name": "blog",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.2.0",
+    "@prisma/client": "^5.15.0",
+    "@tailwindcss/typography": "^0.5.13",
+    "bcrypt": "^5.1.1",
+    "date-fns": "^3.6.0",
+    "dompurify": "^3.1.5",
+    "html-react-parser": "^5.1.10",
+    "jose": "^5.4.0",
+    "next": "14.2.4",
+    "next-auth": "^5.0.0-beta.19",
+    "quill": "^2.0.2",
+    "quill-image-drop-module": "^1.0.3",
+    "quill-image-resize-module": "^3.0.0",
+    "quill-image-resize-module-react": "^3.0.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-quill": "^2.0.0",
+    "react-toastify": "^10.0.5",
+    "sanitize-html": "^2.13.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/dompurify": "^3.0.5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/sanitize-html": "^2.11.0",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.4",
+    "postcss": "^8",
+    "prisma": "^5.15.0",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
