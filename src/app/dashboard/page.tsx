@@ -37,7 +37,7 @@ export default async function Dashboard() {
       <div className="p-6">
         <div className="flex items-center space-x-4">
           {user.image ? (
-            <Image src={user.image} alt={user.name} width={50} height={50} className="rounded-full" />
+            <Image src={user.image} alt={user.name || 'User'} width={50} height={50} className="rounded-full" />
           ) : (
             <div className="w-12 h-12 bg-gray-500 rounded-full flex items-center justify-center text-white">
               {user.name?.charAt(0).toUpperCase()}

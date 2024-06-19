@@ -9,5 +9,5 @@ export default async function CreatePostPage() {
     redirect('/signin');
   }
 
-  return <CreatePostForm session={session} />;
+  return <CreatePostForm/>;
 }
