@@ -190,3 +190,61 @@ export async function createPost(formData: FormData): Promise<CreatePostResponse
     };
   }
 }
+
+
+
+// This function now toggles like/unlike based on the current state and updates the like count.
+export async function createLike(postId: any) {
+  const session = await getSession();
+  if (!session || !session.user) {
+    return { error: { message: 'Not authenticated' } };
+  }
+
+  const userId = session.user.id;
+
+  const existingLike = await prisma.like.findFirst({
+    where: {
+      userId: userId,
+      postId: postId,
+    },
+  });
+
+  if (existingLike) {
+    // User has already liked the post, remove the like
+    await prisma.like.delete({
+      where: {
+        id: existingLike.id,
+      },
+    });
+
+    const updatedPost = await prisma.post.update({
+      where: { id: postId },
+      data: {
+        likeCount: {
+          decrement: 1,
+        },
+      },
+    });
+
+    return { likeCount: updatedPost.likeCount, isLiked: false };
+  } else {
+    // User has not liked the post yet, add a like
+    await prisma.like.create({
+      data: {
+        userId: userId,
+        postId: postId,
+      },
+    });
+
+    const updatedPost = await prisma.post.update({
+      where: { id: postId },
+      data: {
+        likeCount: {
+          increment: 1,
+        },
+      },
+    });
+
+    return { likeCount: updatedPost.likeCount, isLiked: true };
+  }
+}

@@ -3,6 +3,7 @@ import sanitizeHtml from "sanitize-html";
 import parse from "html-react-parser";
 import { Navbar } from "@/app/components/LandingPage";
 import { formatDistanceToNow } from 'date-fns';
+import Like from "@/app/components/Like";  // Adjust the import path according to your project structure
 
 export default async function Page({ params }: any) {
   const id = params.postId;
@@ -44,7 +45,7 @@ export default async function Page({ params }: any) {
             </div>
           </div>
           <div className="ml-4">
-            <h1 className="text-2xl font-semibold text-gray-800">{parse(sanitizedTitle)}</h1>
+            <div className="text-2xl font-semibold text-gray-800">{parse(sanitizedTitle)}</div>
             <p className="text-gray-500">Posted by: {post.author.name}</p>
           </div>
           <p className="text-sm text-gray-500">
@@ -52,6 +53,7 @@ export default async function Page({ params }: any) {
           </p>
         </div>
         <div className="prose text-gray-700">{parse(sanitizedContent)}</div>
+        <Like post={post} /> {/* Add the Like component here */}
       </div>
     </section>
   );

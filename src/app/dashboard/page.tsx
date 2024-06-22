@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { Navbar } from "../components/LandingPage";
 import sanitizeHtml from "sanitize-html";
 import parse from "html-react-parser";
-import Link from 'next/link'; // Import Link from Next.js
+import Link from 'next/link'; 
 
 export default async function Dashboard() {
   
