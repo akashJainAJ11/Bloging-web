@@ -115,6 +115,57 @@ export async function signup(formData: FormData) {
 }
 
 
+export async function signIn(formData: FormData) {
+  const getStringValue = (value: FormDataEntryValue | null): string | undefined => {
+    return typeof value === 'string' ? value : undefined;
+  };
+
+  const userCredentials = {
+    email: getStringValue(formData.get("email")),
+    password: getStringValue(formData.get("password"))
+  };
+
+  if (!userCredentials.email || !userCredentials.password) {
+    return NextResponse.json({
+      error: "Any value is null or invalid"
+    }, {
+      status: 400
+    });
+  }
+
+  try {
+    // Check if the user exists
+    const user = await prisma.user.findUnique({
+      where: { email: userCredentials.email }
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "Email not found" }, { status: 404 });
+    }
+
+    // Compare the passwords
+    const isPasswordValid = await bcrypt.compare(userCredentials.password, user.password);
+
+    if (!isPasswordValid) {
+      return NextResponse.json({ error: "Invalid password" }, { status: 401 });
+    }
+
+    // Include user ID in the session
+    const sessionUser = { id: user.id, email: user.email, name: user.name };
+    
+    // Encrypt the session
+    const expires = new Date(Date.now() + 31536000); // 1 year
+    const session = await encrypt({ user: sessionUser, expires });
+
+    // Set the session cookie
+    cookies().set("session", session, { expires, httpOnly: true });
+
+    return NextResponse.json({ message: "User signed in successfully", user: sessionUser }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
+  }
+}
+
 export async function getSession(){
     const session = cookies().get("session")?.value;
     if(!session) return null;
