@@ -40,74 +40,79 @@ interface user {
     password: string
 }
 
-export async function signup(formData: FormData){
+export async function signup(formData: FormData) {
+  const getStringValue = (value: FormDataEntryValue | null): string | undefined => {
+      return typeof value === 'string' ? value : undefined;
+  };
 
-    const getStringValue = (value: FormDataEntryValue | null): string | undefined => {
-        return typeof value === 'string' ? value : undefined;
-    };
+  const user = {
+      email: getStringValue(formData.get("email")),
+      name: getStringValue(formData.get("name")),
+      password: getStringValue(formData.get("password"))
+  };
 
-    const user = {
-        email: getStringValue(formData.get("email")),
-        name: getStringValue(formData.get("name")),
-        password: getStringValue(formData.get("password"))
-    };
+  if (!user.email || !user.name || !user.password) {
+      return NextResponse.json({
+          error: "Any value is null or invalid"
+      }, {
+          status: 400
+      });
+  }
 
+  try {
+      // Check if the user already exists
+      const existingUser = await prisma.user.findUnique({
+          where: {
+              email: user.email
+          },
+      });
 
-    if (!user.email || !user.name || !user.password) {
-        return NextResponse.json({
-            error: "Any value is null or invalid"
-        }, {
-            status: 400 
-        });
-    }
+      if (existingUser) {
+          return NextResponse.json({ error: "Email in use" }, {
+              status: 409
+          });
+      }
 
-    try {
-        const existingUser = await prisma.user.findUnique({
-            where: {
-                email: user.email
-            },
-        });
+      // Hash the user's password
+      const hashedPassword = await bcrypt.hash(user.password, 10);
 
-        if (existingUser) {
-            return NextResponse.json({ error: "Email in use" }, {
-                status: 409
-            });
-        }
+      // Create the new user in the database
+      const DBuser = await prisma.user.create({
+          data: {
+              name: user.name,
+              email: user.email,
+              password: hashedPassword
+          },
+          select: {
+              id: true,
+              name: true,
+              email: true
+          }
+      });
 
-        const hashedPassword = await bcrypt.hash(user.password, 10);
+      // Include user ID in the session
+      const sessionUser = {
+          id: DBuser.id,
+          email: user.email,
+          name: user.name
+      };
+      
+      // Encrypt the session
+      const expires = new Date(Date.now() + 31536000);
+      const session = await encrypt({ user: sessionUser, expires });
 
-        const expires = new Date(Date.now() + 31536000)
-        const session = await  encrypt({ user, expires });
+      // Set the session cookie
+      cookies().set("session", session, { expires, httpOnly: true });
 
-        cookies().set("session", session, {expires, httpOnly: true})
+      return NextResponse.json({ 
+          message: "User created successfully", 
+          user: sessionUser
+      }, { status: 200 });
 
-        const DBuser = await prisma.user.create({
-            data: {
-                name: user.name,
-                email: user.email,
-                password: hashedPassword
-            },
-            select: {
-                id: true,
-                name: true,
-                email: true
-            }
-        });
-        return NextResponse.json({ 
-            message: "User created successfully", 
-            user: {
-                id: DBuser.id || null,
-                name: DBuser.name || null,
-                email: DBuser.email || null
-            }
-        }, {status: 200});
-        
-    } catch (error) {
-        return NextResponse.json({ error: 'An unexpected error occurred' }, {status: 500});
-    }
-
+  } catch (error) {
+      return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
+  }
 }
-
 
 
 export async function getSession(){
@@ -201,6 +206,7 @@ export async function createLike(postId: any) {
   }
 
   const userId = session.user.id;
+  console.log("Session24: ", session)
 
   const existingLike = await prisma.like.findFirst({
     where: {

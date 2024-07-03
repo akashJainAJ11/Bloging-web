@@ -27,7 +27,7 @@ export default function NavBar({ session }:any) {
                 className="cursor-pointer bg-gray-700 rounded-full h-10 w-10 flex items-center justify-center text-lg"
                 onClick={toggleDropdown}
               >
-                {session.user.name.charAt(0).toUpperCase()}
+                {session.user.name?.charAt(0).toUpperCase()}
               </div>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
@@ -80,7 +80,7 @@ export default function NavBar({ session }:any) {
                 className="cursor-pointer bg-gray-700 rounded-full h-10 w-10 flex items-center justify-center text-lg mt-2"
                 onClick={toggleDropdown}
               >
-                {session.user.name.charAt(0).toUpperCase()}
+                {session.user.name?.charAt(0).toUpperCase()}
               </div>
               {dropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">

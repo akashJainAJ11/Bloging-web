@@ -41,7 +41,7 @@ export default async function Page({ params }: any) {
         <div className="flex items-center mb-4">
           <div className="flex-shrink-0">
             <div className="bg-blue-500 text-white rounded-full h-8 w-8 flex items-center justify-center text-xl">
-              {authorName.charAt(0).toUpperCase()}
+              {authorName?.charAt(0).toUpperCase()}
             </div>
           </div>
           <div className="ml-4">

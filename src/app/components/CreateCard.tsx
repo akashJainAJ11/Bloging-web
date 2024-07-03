@@ -40,7 +40,7 @@ function PostCard({ post }: any) {
     <div className="max-w-sm rounded overflow-hidden shadow-lg p-6 bg-white cursor-pointer mx-auto md:max-w-md lg:max-w-lg xl:max-w-xl">
       <div className="flex flex-col sm:flex-row items-center mb-4">
         <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
-          {post.author.name.charAt(0).toUpperCase()}
+          {post.author.name?.charAt(0).toUpperCase()}
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-4 flex-1">
           <div className="font-bold text-xl break-words sm:truncate">{parse(sanitizedTitle)}</div>

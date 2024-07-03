@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { createLike } from '@/lib/route';
 
-const Like = ({ post }:any) => {
+const Like = ({ post }: any) => {
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [isLiked, setIsLiked] = useState(post.initiallyLiked || false);
   const [isLoading, setIsLoading] = useState(false);
