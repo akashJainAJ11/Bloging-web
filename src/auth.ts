@@ -80,9 +80,16 @@ const providers: Provider[] = [
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers,
+    pages: {
+        signIn: '/signin',
+    },
     callbacks: {
         async redirect({ url, baseUrl }) {
-            return '/';
-          },
-    }
+            // Allows relative callback URLs
+            if (url.startsWith("/")) return `${baseUrl}${url}`
+            // Allows callback URLs on the same origin
+            else if (new URL(url).origin === baseUrl) return url
+            return baseUrl
+        },
+    },
 });
